@@ -1,0 +1,18 @@
+登陆表:
+CREATE TABLE `login` (   `id` int(11) NOT NULL AUTO_INCREMENT,   `account` varchar(20) NOT NULL,   `password` varchar(20) NOT NULL DEFAULT '000000',   `roleid` int(11) DEFAULT NULL,   PRIMARY KEY (`id`),   UNIQUE KEY `account` (`account`) ) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8
+
+权限表:
+CREATE TABLE `role` (   `id` int(11) NOT NULL AUTO_INCREMENT,   `name` varchar(10) NOT NULL,   PRIMARY KEY (`id`) ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8
+
+学生表:
+CREATE TABLE `student` (   `id` int(11) NOT NULL AUTO_INCREMENT,   `studentid` varchar(20) NOT NULL,   `name` varchar(10) NOT NULL,   `sex` varchar(1) NOT NULL,   `birth` date NOT NULL,   `enrollment` date NOT NULL,   `collegeid` int(11) DEFAULT NULL,   PRIMARY KEY (`id`),   UNIQUE KEY `studentid` (`studentid`) ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8
+
+教师表:
+CREATE TABLE `teacher` (   `id` int(11) NOT NULL AUTO_INCREMENT,   `teacherid` varchar(20) NOT NULL,   `teachername` varchar(20) NOT NULL,   `sex` varchar(1) NOT NULL,   `birth` date NOT NULL,   `entry` date NOT NULL,   `college` int(11) NOT NULL,   `position` varchar(10) DEFAULT '教师',   PRIMARY KEY (`id`),   UNIQUE KEY `teacherid` (`teacherid`) ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8
+
+课程表:
+CREATE TABLE `course` (   `id` int(11) NOT NULL AUTO_INCREMENT,   `name` varchar(20) NOT NULL,   `teacher` int(11) NOT NULL,   `time` varchar(20) NOT NULL,   `addr` varchar(20) NOT NULL,   `score` int(11) NOT NULL,   `college` int(11) NOT NULL,   `type` varchar(5) NOT NULL,   `courseid` varchar(20) NOT NULL,   PRIMARY KEY (`id`),   UNIQUE KEY `coursid` (`courseid`),   UNIQUE KEY `courseid` (`courseid`) ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8
+
+专业表:
+CREATE TABLE `college` (   `id` int(11) NOT NULL AUTO_INCREMENT,   `collegename` varchar(20) NOT NULL,   PRIMARY KEY (`id`) 
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.cjj.idao.CourseMapper" >
+  <resultMap id="Course" type="com.cn.cjj.pojo.Course" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="VARCHAR" />
+    <result column="addr" property="addr" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="courseid" property="courseid" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <association property="teacher" javaType="com.cn.cjj.pojo.Teacher">
+   		<result property="teacherid" column="teacherid" />
+    	<result property="teachername" column="teachername" />
+    </association>
+    <association property="college" javaType="com.cn.cjj.pojo.College">
+    	<result property="collegeid" column="collegeid" />
+        <result property="collegename" column="collegename" />
+    </association>
+  </resultMap>
+  <!-- 基础信息 -->
+  <sql id="Base_Column_List" >
+    id, courseid, name, teacher, time, addr, score, college, type
+  </sql>
+  <!-- 完整信息 -->
+  <sql id="Join_Column_List" >
+    course.id, course.courseid, course.name, teacher.teachername, course.time, course.addr, course.score, college.collegename, course.type
+  </sql>
+  <!-- 学生系统查询成绩时 学分显示改为成绩显示 -->
+  <sql id="Mark_Column_List" >
+    course.id, course.courseid, course.name, teacher.teachername, course.time, course.addr, record.score, college.collegename, course.type
+  </sql>
+  <!-- 得到课程总数  -->
+  <select id="selectCount" resultType="int" >
+  	select count(*) from course
+  </select>
+  <!-- 得到指定教师的课程总数  -->
+  <select id="selectCountByTeacherId" resultType="int" parameterType="String">
+  	select count(*) from course where teacher = #{teacherId,jdbcType=VARCHAR}
+  </select>
+  <!-- 查询全部课程信息,分页查询,连接查询,学院，老师编号显示为对应的学院名字和老师名字 -->
+  <select id="selectByPaging" resultMap="Course" parameterType="int">
+    select 
+    <include refid="Join_Column_List" />
+    from course
+    inner join teacher on course.teacher=teacher.teacherid
+    inner join college on course.college=college.collegeid order by courseid+0
+    limit #{firstResult},6 
+  </select>
+  <select id="selectByPagingTeacherId" resultMap="Course">
+    select 
+    <include refid="Base_Column_List" />
+    from course where teacher = #{teacherId} order by courseid+0
+    limit #{firstResult},6 
+  </select>
+  <select id="selectByCourseId" resultMap="Course" parameterType="String">
+    select 
+    <include refid="Join_Column_List" />
+    from course
+    inner join teacher on course.teacher=teacher.teacherid
+    inner join college on course.college=college.collegeid
+    where course.courseid = #{courseid,jdbcType=VARCHAR}
+  </select>
+  <insert id="insertCourse" parameterType="com.cn.cjj.pojo.Course" >
+    insert into course
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="teacher != null" >
+        teacher,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="addr != null" >
+        addr,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="college != null" >
+        college,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="courseid != null" >
+        courseid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="teacher != null" >
+        #{teacher.teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="college != null" >
+        #{college.collegeid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="courseid != null" >
+        #{courseid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="selectIsCourseId" resultType="boolean" parameterType="String">
+    select 
+   	count(id)
+    from course
+    where course.courseid = #{courseid,jdbcType=VARCHAR}
+  </select>
+  <update id="updateCourse" parameterType="com.cn.cjj.pojo.Course" >
+    update course
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="teacher != null" >
+        teacher = #{teacher.teacherid,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        addr = #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="college != null" >
+        college = #{college.collegeid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="courseid != null" >
+        courseid = #{courseid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <delete id="deleteCourse" parameterType="java.lang.Integer" >
+    delete from course
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteCourseByTeacherId" parameterType="java.lang.String" >
+    delete from course
+    where teacher = #{teacherId,jdbcType=VARCHAR}
+  </delete>
+  <select id="selectSelectedCourse" resultMap="Course">
+    select 
+    <include refid="Join_Column_List" />
+    from course
+    inner join teacher on course.teacher=teacher.teacherid
+    inner join college on course.college=college.collegeid
+    inner join record on course.courseid=record.courseid
+    where record.studentid = #{studentId,jdbcType=VARCHAR} and record.score is null order by course.courseid+0
+    limit #{firstResult},6 
+  </select>
+  <select id="selectSelectedCount" resultType="int" parameterType="String">
+  	select count(*) from course 
+  	inner join record on course.courseid=record.courseid
+  	where record.studentid = #{studentId,jdbcType=VARCHAR}  and record.score is null
+  </select>
+  <select id="selectMarkedCount" resultType="int" parameterType="String">
+  	select count(*) from course 
+  	inner join record on course.courseid=record.courseid
+  	where record.studentid = #{studentId,jdbcType=VARCHAR}  and record.score is not null
+  </select>
+  <select id="selectSelectCourse" resultMap="Course">
+    select 
+    <include refid="Join_Column_List" />
+    from course
+    inner join teacher on course.teacher=teacher.teacherid
+    inner join college on course.college=college.collegeid
+    left join record on course.courseid=record.courseid
+    where record.studentid is null order by course.courseid+0
+    limit #{firstResult},6 
+  </select>
+  <select id="selectMarkedCourse" resultMap="Course">
+    select 
+    <include refid="Mark_Column_List" />
+    from course
+    inner join teacher on course.teacher=teacher.teacherid
+    inner join college on course.college=college.collegeid
+    inner join record on course.courseid=record.courseid
+    where record.studentid = #{studentId,jdbcType=VARCHAR} and record.score is not null order by course.courseid+0
+    limit #{firstResult},6 
+  </select>
+</mapper>

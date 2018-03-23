@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.cjj.idao.CollegeMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.cjj.pojo.College" >
+    <id column="collegeid" property="collegeid" jdbcType="INTEGER" />
+    <result column="collegename" property="collegename" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    collegeid, collegename
+  </sql>
+  <!-- 查找全部学院信息 -->
+  <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from college
+  </select>
+</mapper>
